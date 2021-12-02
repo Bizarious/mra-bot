@@ -1,6 +1,6 @@
 from importlib.util import spec_from_file_location, module_from_spec
 from abc import ABC, abstractmethod
-from extension import Extension, ExtensionPackage
+from .extension import Extension, ExtensionPackage
 import os
 
 
@@ -36,7 +36,7 @@ class ExtensionHandler(ABC):
     The class used to manage extensions.
     """
 
-    def __init__(self, *paths: [str]):
+    def __init__(self, *paths: str):
         self._loader = ExtensionLoader()
         self._paths = paths
 
