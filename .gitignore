@@ -130,3 +130,5 @@ dmypy.json
 
 # idea files
 .idea/
+
+token.py
