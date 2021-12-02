@@ -2,4 +2,4 @@ from core import Bot
 from api.telegram import TelegramAPI
 
 b = Bot(TelegramAPI())
-b.run()
+b.test2()
