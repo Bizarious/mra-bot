@@ -1,2 +1,2 @@
-from api_template import InterfaceTemplate
-from bot import Bot
+from .api_template import APILayer
+from .bot import Bot

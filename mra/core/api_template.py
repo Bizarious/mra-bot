@@ -1,8 +1,16 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import Callable
 
 
-class InterfaceTemplate(ABC):
+class APILayer(ABC):
     """
     The template class for the api calling interface.
     """
-    pass
+
+    @abstractmethod
+    def run(self) -> None:
+        pass
+
+    @abstractmethod
+    def add_message_handler(self, cmd: Callable) -> None:
+        pass
