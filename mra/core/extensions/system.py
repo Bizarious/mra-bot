@@ -6,7 +6,11 @@ from core.commands import command
 class System(Extension):
 
     @command()
-    def test(self):
-        print("Hello World")
+    def test(self, ctx):
+        ctx.send("Test")
+
+    @command()
+    def hello(self, ctx):
+        ctx.reply("Hello")
 
 
