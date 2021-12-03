@@ -94,7 +94,6 @@ class ExtensionHandler:
         attributes = self._loader.get_attributes(extension, *self._accessible_types)
         self._execute_on_loading(attributes, extension)
         self._extensions[name] = extension
-        print(self._extensions)
 
     def _execute_on_loading(self, attributes: dict, extension: Extension) -> None:
         for func in self._to_be_executed_on_extension_loading:
