@@ -1,5 +1,5 @@
 from importlib.util import spec_from_file_location, module_from_spec
-from .extension import Extension, ExtensionPackage
+from .extension import Extension, ExtensionPackage, ExtensionInterface
 from .errors import ExtensionClassNotFoundError
 import os
 
@@ -36,9 +36,10 @@ class ExtensionHandler:
     The class used to manage extensions.
     """
 
-    def __init__(self, *paths: str):
+    def __init__(self, interface: ExtensionInterface, *paths: str):
         self._loader = ExtensionLoader()
         self._paths = paths
+        self._interface = interface
 
         # collecting all types the handler can see
         self._accessible_types = []
@@ -90,7 +91,7 @@ class ExtensionHandler:
             raise ExtensionClassNotFoundError(f'The extension class "{name}" does not exist')
 
         extension_class = self._extension_classes[name]
-        extension = extension_class(*args, **kwargs)
+        extension = extension_class(self._interface, *args, **kwargs)
         attributes = self._loader.get_attributes(extension, *self._accessible_types)
         self._execute_on_loading(attributes, extension)
         self._extensions[name] = extension
