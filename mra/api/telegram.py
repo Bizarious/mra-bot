@@ -9,7 +9,7 @@ class TelegramAPI(APILayer):
 
     def __init__(self):
         APILayer.__init__(self, prefix="/")
-        self.bot = telebot.TeleBot(__token__, threaded=True)
+        self.bot = telebot.TeleBot(__token__, threaded=False, skip_pending=True)
         telebot.apihelper.SESSION_TIME_TO_LIVE = 5 * 60
 
     def run(self) -> None:
@@ -32,3 +32,10 @@ class TelegramAPI(APILayer):
 
     def reply_to_message(self, chat_id: int, message: str, message_id: int) -> None:
         self.bot.send_message(chat_id, message, reply_to_message_id=message_id)
+
+    def stop(self) -> None:
+        self.bot.stop_polling()
+        self.bot.get_updates(offset=self.bot.last_update_id+1, long_polling_timeout=1)
+
+    def on_command_error(self, ctx: Context, exception: Exception) -> None:
+        raise NotImplementedError()

@@ -29,8 +29,8 @@ class Extension:
     This class is used to extend functionality in different ways.
     """
 
-    def __init__(self, interface: ExtensionInterface):
-        self._interface = interface
+    def __init__(self, interface):
+        self.interface = interface
 
     @property
     def name(self):

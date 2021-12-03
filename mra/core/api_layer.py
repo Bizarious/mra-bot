@@ -19,9 +19,6 @@ class APILayer(ABC):
     def prefix(self, prefix) -> None:
         self._prefix = prefix
 
-    def on_command_error(self, ctx: Context, exception: Exception) -> None:
-        raise NotImplementedError()
-
     @abstractmethod
     def run(self) -> None:
         pass
@@ -40,6 +37,14 @@ class APILayer(ABC):
 
     @abstractmethod
     def reply_to_message(self, chat_id: int, message: str, message_id: int) -> None:
+        pass
+
+    @abstractmethod
+    def stop(self) -> None:
+        pass
+
+    @abstractmethod
+    def on_command_error(self, ctx: Context, exception: Exception) -> None:
         pass
 
 

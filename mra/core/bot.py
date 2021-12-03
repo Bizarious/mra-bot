@@ -44,3 +44,6 @@ class Bot:
     def run(self):
         self.__api_layer.add_message_handler(self.__api_command_adapter.translate)
         self.__api_layer.run()
+
+    def stop(self):
+        self.__api_layer.stop()

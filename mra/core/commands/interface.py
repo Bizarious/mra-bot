@@ -9,7 +9,11 @@ class CommandInterface(ExtensionInterface):
     """
     def __init__(self, bot):
         ExtensionInterface.__init__(self, bot)
+        self._bot = self._entity
 
     @property
     def extension_handler(self) -> CommandFeature:
-        return self._entity.extension_handler
+        return self._bot.extension_handler
+
+    def stop_bot(self):
+        self._bot.stop()
