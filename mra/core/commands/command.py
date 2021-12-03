@@ -10,6 +10,9 @@ def command(alias: str = None):
 
 
 class Command:
+    """
+    The command class.
+    """
 
     def __init__(self, func: Callable, name: str):
         self.__func = func
