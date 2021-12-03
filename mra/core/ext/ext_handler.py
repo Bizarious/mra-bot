@@ -1,6 +1,6 @@
 from importlib.util import spec_from_file_location, module_from_spec
-from abc import ABC, abstractmethod
 from .extension import Extension, ExtensionPackage
+from .errors import ExtensionClassNotFoundError
 import os
 
 
@@ -10,7 +10,7 @@ class ExtensionLoader:
     """
 
     @staticmethod
-    def get_attributes(obj: object, types: [str]) -> dict:
+    def get_attributes(obj: object, *types: str) -> dict:
         """
         Searches through an object and returns a dictionary that contains the given types
         mapped to all attributes of that object, that are instances of that type.
@@ -31,7 +31,7 @@ class ExtensionLoader:
         return attribute_mapping
 
 
-class ExtensionHandler(ABC):
+class ExtensionHandler:
     """
     The class used to manage extensions.
     """
@@ -40,34 +40,65 @@ class ExtensionHandler(ABC):
         self._loader = ExtensionLoader()
         self._paths = paths
 
+        # collecting all types the handler can see
         self._accessible_types = []
+
+        # list of functions that are executed on extension loading
+        self._to_be_executed_on_extension_loading = []
+
+        # maps all extension classes to their names
         self._extension_classes = {}
+
+        # maps all loaded extension objects to their names
+        self._extensions = {}
 
     def _add_extension_class(self, name: str, extension: Extension) -> None:
         if name in self._extension_classes:
             raise RuntimeError(f'The extension "{name}" already exists')
         self._extension_classes[name] = extension
 
-    def _load_extension_file(self, name: str, path: str) -> None:
+    def _load_extension_from_file(self, name: str, path: str, *types: str) -> None:
         # loading module
         spec = spec_from_file_location(name, path)
         module = module_from_spec(spec)
         spec.loader.exec_module(module)
 
         extension_packages: [ExtensionPackage] = self._loader.get_attributes(module,
-                                                                             ["ExtensionPackage"]
+                                                                             *types
                                                                              )["ExtensionPackage"]
         for extension_package in extension_packages:
-            self._add_extension_class(extension_package.name, extension_package.cls)
+            self._add_extension_class(extension_package.cls.__name__, extension_package.cls)
 
-    def load_extensions_from_paths(self) -> None:
+    def _load_extensions_from_paths_with_types(self, *package_types: str) -> None:
         """
-        Loads all extension classes that are found in the paths to the list.
+        Loads all extension classes that are found in the paths to the list with given package types.
+        Do not overwrite this function, overwrite load_extensions_from_path instead.
         """
         for path in self._paths:
             for file in os.listdir(path):
-                if not file.startswith("__"):
-                    self._load_extension_file(file[:-3], path+f"/{file}")
+                if not file.startswith("__") and file.endswith(".py"):
+                    self._load_extension_from_file(file[:-3], path + f"/{file}", *package_types)
+
+    def load_extensions_from_paths(self):
+        """
+        Wrapper function for easier access. Can be overwritten.
+        """
+        self._load_extensions_from_paths_with_types("ExtensionPackage")
+
+    def load_extension(self, name: str, *args, **kwargs) -> None:
+        if name not in self._extension_classes:
+            raise ExtensionClassNotFoundError(f'The extension class "{name}" does not exist')
+
+        extension_class = self._extension_classes[name]
+        extension = extension_class(*args, **kwargs)
+        attributes = self._loader.get_attributes(extension, *self._accessible_types)
+        self._execute_on_loading(attributes, extension)
+        self._extensions[name] = extension
+        print(self._extensions)
+
+    def _execute_on_loading(self, attributes: dict, extension: Extension) -> None:
+        for func in self._to_be_executed_on_extension_loading:
+            func(attributes, extension)
 
 
 class ExtensionHandlerFeature:

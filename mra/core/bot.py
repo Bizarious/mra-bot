@@ -1,21 +1,16 @@
 from core import APILayer
 from core.commands import CommandFeature
-from core.ext import ExtensionHandler
+from core.ext import ExtensionHandler, ExtensionClassNotFoundError
 
 
 class BotExtensionHandler(ExtensionHandler, CommandFeature):
 
     def __init__(self, *paths: str):
         ExtensionHandler.__init__(self, *paths)
-        CommandFeature.__init__(self, self._accessible_types)
-        self._extensions = {}
 
-    def load_extension(self, name: str) -> None:
-        extension_class = self._extension_classes[name]
-        extension = extension_class(name)
-        attributes = self._loader.get_attributes(extension, self._accessible_types)
-        self._add_commands(attributes["Command"], extension)
-        self._extensions[name] = extension
+        CommandFeature.__init__(self, self._accessible_types,
+                                self._to_be_executed_on_extension_loading
+                                )
 
 
 class Bot:
