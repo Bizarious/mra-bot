@@ -1,0 +1,2 @@
+class CommandDoesNotExistError(Exception):
+    pass

@@ -14,3 +14,8 @@ class APILayer(ABC):
     @abstractmethod
     def add_message_handler(self, cmd: Callable) -> None:
         pass
+
+
+class APICommandAdapter:
+    pass
+
