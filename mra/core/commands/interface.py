@@ -17,3 +17,6 @@ class CommandInterface(ExtensionInterface):
 
     def stop_bot(self):
         self._bot.stop()
+
+    def restart_bot(self):
+        self._bot.restart()

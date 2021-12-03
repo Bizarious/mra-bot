@@ -1,6 +1,8 @@
 from .api_layer import APILayer, APICommandAdapter
 from core.commands import CommandFeature, CommandInterface
 from core.ext import ExtensionHandler
+import os
+import sys
 
 
 class BotExtensionHandler(ExtensionHandler, CommandFeature):
@@ -47,3 +49,7 @@ class Bot:
 
     def stop(self):
         self.__api_layer.stop()
+
+    def restart(self):
+        self.stop()
+        os.execv(sys.executable, [sys.executable.split("/")[-1]] + sys.argv)

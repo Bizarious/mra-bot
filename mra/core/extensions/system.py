@@ -17,4 +17,6 @@ class System(Extension):
     def stop(self, _):
         self.interface.stop_bot()
 
-
+    @command()
+    def restart(self, _):
+        self.interface.restart_bot()
