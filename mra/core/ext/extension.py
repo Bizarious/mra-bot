@@ -14,13 +14,23 @@ def extension():
     return decorator
 
 
+class ExtensionInterface:
+    """
+    An interface used to provide extensions an controllable
+    set of functionality.
+    """
+
+    def __init__(self, entity):
+        self._entity = entity
+
+
 class Extension:
     """
     This class is used to extend functionality in different ways.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, interface: ExtensionInterface):
+        self._interface = interface
 
     @property
     def name(self):
