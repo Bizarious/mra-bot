@@ -34,6 +34,10 @@ class ExtensionCommandFeature(ExtensionFeature):
     def __init__(self):
         self._commands = {}
 
+    @property
+    def commands(self):
+        return self._commands
+
     def add_command(self, name: str, cmd: Command):
         self._commands[name] = cmd
 
@@ -47,6 +51,10 @@ class HandlerCommandFeature(ExtensionHandlerFeature):
         ExtensionHandlerFeature.__init__(self, types, "Command")
         self._commands = {}
         to_be_executed.append(self._add_commands)
+
+    @property
+    def commands(self) -> dict:
+        return self._commands
 
     def _add_command(self, name: str, cmd: Command, extension: ExtensionCommandFeature) -> None:
         if name in self._commands:
