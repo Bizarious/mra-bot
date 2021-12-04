@@ -21,7 +21,7 @@ class BotInterface(ExtensionInterface):
         self._bot = bot
 
     @property
-    def extension_handler(self) -> ExtensionCommandFeature:
+    def extension_handler(self) -> BotExtensionHandler:
         return self._bot.extension_handler
 
     def stop_bot(self):
@@ -35,3 +35,4 @@ class BotExtension(Extension, ExtensionCommandFeature):
 
     def __init__(self, interface: BotInterface):
         Extension.__init__(self, interface)
+        ExtensionCommandFeature.__init__(self)

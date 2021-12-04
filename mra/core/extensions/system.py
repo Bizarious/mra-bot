@@ -1,9 +1,9 @@
-from core.ext import Extension, extension
-from core.commands import command
+from core.ext import extension
+from core.commands import command, BotExtension
 
 
 @extension()
-class System(Extension):
+class System(BotExtension):
 
     @command()
     def test(self, ctx):

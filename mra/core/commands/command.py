@@ -1,7 +1,7 @@
 from typing import Callable
 from .context import Context
 from .errors import CommandDoesNotExistError
-from core.ext import ExtensionHandlerFeature, Extension, ExtensionFeature
+from core.ext import ExtensionHandlerFeature, ExtensionFeature
 
 
 def command(alias: str = None):
@@ -29,6 +29,15 @@ class Command:
         return self.__name
 
 
+class ExtensionCommandFeature(ExtensionFeature):
+
+    def __init__(self):
+        self._commands = {}
+
+    def add_command(self, name: str, cmd: Command):
+        self._commands[name] = cmd
+
+
 class HandlerCommandFeature(ExtensionHandlerFeature):
     """
     Mixin part for command handling.
@@ -39,15 +48,16 @@ class HandlerCommandFeature(ExtensionHandlerFeature):
         self._commands = {}
         to_be_executed.append(self._add_commands)
 
-    def _add_command(self, name: str, cmd: Command, extension: Extension) -> None:
+    def _add_command(self, name: str, cmd: Command, extension: ExtensionCommandFeature) -> None:
         if name in self._commands:
             raise RuntimeError(f'The command "{name}" already exists')
         self._commands[name] = {
             "command": cmd,
             "extension": extension
         }
+        extension.add_command(name, cmd)
 
-    def _add_commands(self, attributes: dict, extension: Extension) -> None:
+    def _add_commands(self, attributes: dict, extension: ExtensionCommandFeature) -> None:
         for cmd in attributes["Command"]:
             self._add_command(cmd.name, cmd, extension)
 
@@ -70,7 +80,3 @@ class HandlerCommandFeature(ExtensionHandlerFeature):
         arguments = context.arguments
 
         command_func(extension, context, *arguments)
-
-
-class ExtensionCommandFeature(ExtensionFeature):
-    pass
