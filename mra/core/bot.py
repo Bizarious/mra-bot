@@ -1,20 +1,7 @@
 from .api_layer import APILayer, APICommandAdapter
-from core.commands import CommandFeature, CommandInterface
-from core.ext import ExtensionHandler
+from core.commands import BotInterface, BotExtensionHandler
 import os
 import sys
-
-
-class BotExtensionHandler(ExtensionHandler, CommandFeature):
-
-    def __init__(self, interface, *paths: str):
-        ExtensionHandler.__init__(self, interface, *paths)
-
-        CommandFeature.__init__(self, self._accessible_types,
-                                self._to_be_executed_on_extension_loading
-                                )
-
-        self._interface = interface
 
 
 class Bot:
@@ -27,7 +14,7 @@ class Bot:
         self.__api_layer = api_layer
 
         # the interface that is given to every extension
-        self.__interface = CommandInterface(self)
+        self.__interface = BotInterface(self)
 
         # the extension layer, used to process commands, listeners etc.
         self.__extension_handler = BotExtensionHandler(self.__interface, "core/extensions")

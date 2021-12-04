@@ -1,3 +1,3 @@
-from .ext_handler import *
+from .handler import *
 from .extension import *
 from.errors import *

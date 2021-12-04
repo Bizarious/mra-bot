@@ -1,4 +1,3 @@
-from .ext_handler_mixin import *
+from .extension import *
 from .command import *
 from .context import *
-from .interface import *

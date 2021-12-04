@@ -19,9 +19,7 @@ class ExtensionInterface:
     An interface used to provide extensions an controllable
     set of functionality.
     """
-
-    def __init__(self, entity):
-        self._entity = entity
+    pass
 
 
 class Extension:
@@ -29,9 +27,17 @@ class Extension:
     This class is used to extend functionality in different ways.
     """
 
-    def __init__(self, interface):
-        self.interface = interface
+    def __init__(self, interface: ExtensionInterface):
+        self._interface = interface
 
     @property
     def name(self):
         return self.__class__.__name__
+
+    @property
+    def interface(self):
+        return self._interface
+
+
+class ExtensionFeature:
+    pass

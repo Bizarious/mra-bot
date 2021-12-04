@@ -53,7 +53,6 @@ class ExtensionHandler:
         # maps all loaded extension objects to their names
         self._extensions = {}
 
-
     def _add_extension_class(self, name: str, extension: Extension) -> None:
         if name in self._extension_classes:
             raise RuntimeError(f'The extension "{name}" already exists')
