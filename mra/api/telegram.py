@@ -28,10 +28,10 @@ class TelegramAPI(APILayer):
         return context
 
     def send_message(self, chat_id: int, message: str) -> None:
-        self.bot.send_message(chat_id, message)
+        self.bot.send_message(chat_id, message, parse_mode="Markdown")
 
     def reply_to_message(self, chat_id: int, message: str, message_id: int) -> None:
-        self.bot.send_message(chat_id, message, reply_to_message_id=message_id)
+        self.bot.send_message(chat_id, message, reply_to_message_id=message_id, parse_mode="Markdown")
 
     def stop(self) -> None:
         self.bot.stop_polling()
