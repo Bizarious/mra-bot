@@ -1,13 +1,9 @@
 from core.ext import extension
-from core.commands import command, BotExtension
+from core.commands import command, BotExtension, group
 
 
 @extension()
 class System(BotExtension):
-
-    @command()
-    def test(self, ctx):
-        ctx.send("Test")
 
     @command()
     def hello(self, ctx):
@@ -20,3 +16,12 @@ class System(BotExtension):
     @command()
     def restart(self, _):
         self.interface.restart_bot()
+
+    @group()
+    def test(self, ctx, a):
+        ctx.send(a)
+
+    @test.command()
+    def test2(self, ctx, a):
+        ctx.send(int(a)+1)
+
