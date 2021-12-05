@@ -12,6 +12,14 @@ def command(alias: str = None):
     return decorator
 
 
+def group(alias: str = None):
+    def decorator(func: Callable):
+        if alias is None:
+            return CommandGroup(func, func.__name__)
+        return CommandGroup(func, alias)
+    return decorator
+
+
 class Command:
     """
     The command class.
@@ -27,6 +35,42 @@ class Command:
     @property
     def name(self):
         return self.__name
+
+
+class CommandGroup(Command):
+    """
+    A group containing subcommands.
+    """
+
+    def __init__(self, func: Callable, name: str):
+        Command.__init__(self, func, name)
+        self._commands = {}
+
+    def __call__(self, *args, **kwargs):
+        if len(args) > 2 and args[2] in self._commands:
+            extension = args[0]
+            context = args[1]
+            sub_command_name = args[2]
+            args = args[3:]
+
+            command_func = self._commands[sub_command_name]
+            return command_func(extension, context, *args, **kwargs)
+
+        return Command.__call__(self, *args, **kwargs)
+
+    @property
+    def commands(self):
+        return self._commands
+
+    def command(self, alias: str = None):
+        """
+        Decorator for adding a command to the group.
+        """
+        def decorator(func: Callable):
+            if alias is None:
+                self._commands[func.__name__] = Command(func, func.__name__)
+            self._commands[alias] = Command(func, alias)
+        return decorator
 
 
 class ExtensionCommandFeature(ExtensionFeature):
@@ -48,7 +92,7 @@ class HandlerCommandFeature(ExtensionHandlerFeature):
     """
 
     def __init__(self, types, to_be_executed: [Callable]):
-        ExtensionHandlerFeature.__init__(self, types, "Command")
+        ExtensionHandlerFeature.__init__(self, types, "Command", "CommandGroup")
         self._commands = {}
         to_be_executed.append(self._add_commands)
 
@@ -68,6 +112,8 @@ class HandlerCommandFeature(ExtensionHandlerFeature):
     def _add_commands(self, attributes: dict, extension: ExtensionCommandFeature) -> None:
         for cmd in attributes["Command"]:
             self._add_command(cmd.name, cmd, extension)
+        for cmd_group in attributes["CommandGroup"]:
+            self._add_command(cmd_group.name, cmd_group, extension)
 
     def handle_command(self, context: Context, command_prefix: str) -> None:
         """
