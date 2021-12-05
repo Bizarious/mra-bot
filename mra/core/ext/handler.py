@@ -62,19 +62,19 @@ class ExtensionHandler:
             raise RuntimeError(f'The extension "{name}" already exists')
         self._extension_classes[name] = extension
 
-    def _load_extension_from_file(self, name: str, path: str, *types: str) -> None:
+    def _load_extension_from_file(self, name: str, path: str, tps: str) -> None:
         # loading module
         spec = spec_from_file_location(name, path)
         module = module_from_spec(spec)
         spec.loader.exec_module(module)
 
         extension_packages: [ExtensionPackage] = self._loader.get_attributes(module,
-                                                                             *types
-                                                                             )["ExtensionPackage"]
+                                                                             tps
+                                                                             )[tps]
         for extension_package in extension_packages:
             self._add_extension_class(extension_package.cls.__name__, extension_package.cls)
 
-    def _load_extensions_from_paths_with_types(self, *package_types: str) -> None:
+    def _load_extensions_from_paths_with_types(self, package_type: str) -> None:
         """
         Loads all extension classes that are found in the paths to the list with given package types.
         Do not overwrite this function, overwrite load_extensions_from_path instead.
@@ -82,9 +82,9 @@ class ExtensionHandler:
         for path in self._paths:
             for file in os.listdir(path):
                 if not file.startswith("__") and file.endswith(".py"):
-                    self._load_extension_from_file(file[:-3], path + f"/{file}", *package_types)
+                    self._load_extension_from_file(file[:-3], path + f"/{file}", package_type)
 
-    def load_extensions_from_paths(self):
+    def load_extensions_from_paths(self) -> None:
         """
         Wrapper function for easier access. Can be overwritten.
         """
@@ -107,5 +107,6 @@ class ExtensionHandler:
 
 class ExtensionHandlerFeature:
 
-    def __init__(self, types: list, t: str):
-        types.append(t)
+    def __init__(self, types: list, *tps: str):
+        for t in tps:
+            types.append(t)

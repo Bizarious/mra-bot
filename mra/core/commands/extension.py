@@ -1,5 +1,15 @@
 from .command import HandlerCommandFeature, ExtensionCommandFeature
-from core.ext import ExtensionHandler, Extension, ExtensionInterface
+from core.ext import ExtensionHandler, Extension, ExtensionInterface, ExtensionPackage
+
+
+class BotExtensionPackage(ExtensionPackage):
+    pass
+
+
+def bot_extension():
+    def decorator(cls: type):
+        return BotExtensionPackage(cls)
+    return decorator
 
 
 class BotExtensionHandler(ExtensionHandler, HandlerCommandFeature):
@@ -10,6 +20,9 @@ class BotExtensionHandler(ExtensionHandler, HandlerCommandFeature):
         HandlerCommandFeature.__init__(self, self._accessible_types,
                                        self._to_be_executed_on_extension_loading
                                        )
+
+    def load_extensions_from_paths(self) -> None:
+        self._load_extensions_from_paths_with_types("BotExtensionPackage")
 
 
 class BotInterface(ExtensionInterface):

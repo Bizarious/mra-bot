@@ -33,7 +33,7 @@ class Command:
         return self.__func(*args, **kwargs)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
 
@@ -59,10 +59,10 @@ class CommandGroup(Command):
         return Command.__call__(self, *args, **kwargs)
 
     @property
-    def commands(self):
+    def commands(self) -> dict:
         return self._commands
 
-    def command(self, alias: str = None):
+    def command(self, alias: str = None) -> Callable:
         """
         Decorator for adding a command to the group.
         """
