@@ -1,8 +1,7 @@
-from core.ext import extension
-from core.commands import command, BotExtension, group
+from core.commands import command, BotExtension, group, bot_extension
 
 
-@extension()
+@bot_extension()
 class System(BotExtension):
 
     @command()
