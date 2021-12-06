@@ -29,6 +29,7 @@ class Bot:
     def test(self):
         self.__extension_handler.load_extensions_from_paths()
         self.__extension_handler.load_extension("System")
+        self.__extension_handler.load_extension("Help")
 
     def run(self):
         self.__api_layer.add_message_handler(self.__api_command_adapter.translate)
