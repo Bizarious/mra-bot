@@ -131,4 +131,6 @@ dmypy.json
 # idea files
 .idea/
 
+data/
+
 tele_token.py
